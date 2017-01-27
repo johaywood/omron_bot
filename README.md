@@ -1,6 +1,6 @@
 #OmronBot
 
-OmronBot is an automated tool to create iHealth data for several endpoints. Just install the gem, configure your iHealth credentials, and create data.
+OmronBot is an automated tool to create Omron data for several endpoints. Just install the gem, configure your Omron credentials, and create data.
 
 ##Installation
 
@@ -16,7 +16,7 @@ $ brew install qt55
 
 ##Configuration
 
-You need to configure OmronBot with your iHealth credentials before creating data. You can do that with
+You need to configure OmronBot with your Omron credentials before creating data. You can do that with
 
 ```sh
 $ omron_bot config --email your.email@example.com --password pASsW0Rd
