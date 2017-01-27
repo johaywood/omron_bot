@@ -1,0 +1,45 @@
+#!/usr/bin/env ruby
+
+require 'rubygems'
+require 'thor'
+require 'json'
+
+class Bot < Thor
+  desc 'create', 'Creates Omron Data'
+  def create
+    require_relative '../lib/omron_bot/config.rb'
+
+    unless OmronBot::Config.valid?
+      puts 'Invalid or missing config file!'
+      puts 'Create one with `omron_bot config -e email@example.com -p pA$sW0Rd`'
+      return
+    end
+
+    require 'capybara'
+    require 'capybara/dsl'
+    require 'capybara-webkit'
+
+    Capybara.default_driver = :webkit
+    Capybara.javascript_driver = :webkit
+    Capybara.default_max_wait_time = 10
+    Capybara.app_host = 'https://omronwellness.com'
+
+    require_relative '../lib/omron_bot.rb'
+
+    OmronBot.create_data
+  end
+
+  desc 'config', 'Configure Omron Bot Credentials'
+  method_option :email, type: :string, aliases: '-e', desc: 'Omron account email address'
+  method_option :password, type: :string, aliases: '-p', desc: 'Omron account password'
+  def config
+    File.open("#{Dir.home}/.omron_bot", 'w+') do |f|
+      config = JSON.parse(f.read, symbolize_names: true) rescue { credentials: {} }
+      config[:credentials][:email] = options[:email] if options[:email]
+      config[:credentials][:password] = options[:password] if options[:password]
+      f.write(JSON.dump(config))
+    end
+  end
+end
+
+Bot.start
